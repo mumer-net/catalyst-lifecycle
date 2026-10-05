@@ -1,5 +1,5 @@
 # Cisco end-of-life notices for Catalyst 4500 parts, plus the two Catalyst 9400 notices that
-# their replacements run into. Copied by hand from each notice page on cisco.com.
+# their replacements run into. Copied from each notice page on cisco.com.
 #
 # parts maps a part number, written the way the notice writes it, to the replacement the notice
 # names (null when it names none). Where a notice lists two replacements, this keeps the first

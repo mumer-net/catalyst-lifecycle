@@ -1,8 +1,8 @@
 # Drills
 
-I ran these by hand on the DevNet Catalyst 8000V always-on sandbox in October 2026. The output below is copied from my terminal. The sandbox is shared, so I left out every line that belongs to other users.
+I ran these on the DevNet Catalyst 8000V always-on sandbox in October 2026. The output below is copied from my terminal. The sandbox is shared, so I left out every line that belongs to other users.
 
-## First SSH by hand
+## First login
 
 Before writing any collection code, I logged in with plain `ssh` and ran `show version` and `show inventory`.
 
@@ -29,7 +29,7 @@ real    0m23.507s
 exit code 1
 ```
 
-The 8000V saved as usual. The dead device took about 20 seconds to fail (the connection timeout), printed in red, and the run exited with code 1 so a scheduler would notice. At 200 switches, 20 seconds per dead device in a serial loop adds up, which is why collecting in parallel is on my list.
+The 8000V saved as usual. The dead device failed after 23.5 seconds, most of it the 20-second connection timeout. The error printed in red, and the run exited with code 1 so a scheduler would notice. At 200 switches, 20 seconds per dead device in a serial loop adds up, which is why collecting in parallel is on my list.
 
 ## Drill 3: a change the backup has to catch
 

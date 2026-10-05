@@ -8,7 +8,7 @@ Inventories Cisco Catalyst switches over read-only SSH, backs up their configs t
 
 [![ci](https://github.com/mumer-net/catalyst-lifecycle/actions/workflows/ci.yml/badge.svg)](https://github.com/mumer-net/catalyst-lifecycle/actions/workflows/ci.yml)
 
-![The report on a public 4507R+E inventory, then the measurement](docs/demo.gif)
+![The report on two public 4507R+E inventories, then the measurement](docs/demo.gif)
 
 ## Why I built this
 
@@ -81,7 +81,7 @@ uv run catalyst-lifecycle backup                            # commits to ~/confi
 ## Method
 
 - Corpus: 8 public outputs (`show inventory`, `show module`, and `show version`) from the test data of genieparser and ntc-templates, 60 parts in all. [corpus/SOURCES.md](corpus/SOURCES.md) lists where each one came from.
-- Answer key: for each part, its status on September 30, 2026 and the part to order, read off Cisco's notices. Each row names the notices it comes from. The table and the key were checked against the live notice pages on October 5, 2026.
+- Answer key: for each part, its status on September 30, 2026 and the part to order, read off Cisco's notices. Each row names the notices it comes from. The key and the 10 notices it depends on were checked against the live notice pages on October 5, 2026.
 - `measure` scores both lookups on every run. The v0.1 lookup matches the exact part number and stops at the first replacement. A test checks that it still gives the numbers committed in results/v0.1.json.
 - A replacement counts as end-of-life when the table has a notice for it on the key's date.
 - The measurement uses the key's date, not today's, so the numbers don't change as days pass.
@@ -102,10 +102,10 @@ uv run catalyst-lifecycle backup                            # commits to ~/confi
 
 - Goal: turn Cisco's end-of-life notices into something a script can check, and measure how often the naive lookup recommends a part Cisco no longer sells.
 - Built in two releases. v0.1 has collection, parsing, the table, reports, Git backups, and the answer key with the baseline. v0.2 adds spare suffixes and replacement chains.
-- On my first SSH to the sandbox I saw the padding after VID in `show inventory` by hand, before any parser touched it.
-- The first v0.1 report told me to order a WS-X45-SUP8-E and a WS-C4507R-E, parts Cisco stopped selling years ago. That is the weakness v0.2 fixes, and I saw it before I measured it.
-- My DevNet account only allows one active sandbox, so everything live ran on the Catalyst 8000V. To test a device that is down, I added a second device at 192.0.2.1, an address nobody answers on. The 8000V still saved, the dead one failed with "TCP connection to device failed." after about 20 seconds, and the run exited with code 1.
-- For the backup drill I added a loopback by hand on the shared sandbox, backed up, removed it, and backed up again. The backup repo shows three commits: the first backup, 4 lines added, and 4 lines removed. The device added `no ip address` to my loopback on its own.
+- On my first SSH to the sandbox, `show inventory` already had the padding after VID, before any parser touched it.
+- The first v0.1 report told me to order a WS-X45-SUP8-E and a WS-C4507R-E, parts Cisco stopped selling years ago. That is the weakness v0.2 fixes.
+- My DevNet account only allows one active sandbox, so everything live ran on the Catalyst 8000V. To test a device that is down, I added a second device at 192.0.2.1, an address nobody answers on. The 8000V still saved, the dead one failed with "TCP connection to device failed." after 23.5 seconds, and the run exited with code 1.
+- For the backup drill I added a loopback on the shared sandbox, backed up, removed it, and backed up again. The backup repo shows three commits: the first backup, 4 lines added, and 4 lines removed. The device added `no ip address` to my loopback on its own.
 - A bug I hit: with credentials missing, the collect error printed the device name twice. The name came from both the exception and the command that printed it. It now comes from one place.
 - I added masking for SNMPv3 user passwords, AAA `server-private` keys, and VPN keyring pre-shared keys, which the first version of the backup missed.
 - ntc-templates keeps the padding after VID in `show inventory`, so I sent a fix upstream: [ntc-templates #2369](https://github.com/networktocode/ntc-templates/pull/2369). The parser here still strips every field, so it works with or without the fix.

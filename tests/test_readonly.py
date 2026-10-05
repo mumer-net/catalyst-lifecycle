@@ -1,4 +1,4 @@
-"""The tool must never change a device. These tests enforce that in code, not just in the README."""
+"""The tool must never change a device. If any code could, these tests fail the build."""
 
 import re
 from pathlib import Path
