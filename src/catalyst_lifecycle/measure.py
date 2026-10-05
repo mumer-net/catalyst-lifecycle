@@ -3,6 +3,9 @@
 The key gives the status and the part to order for every part in the corpus, on one fixed
 date (its as_of column), read off Cisco's notices. A replacement counts as stale when the
 notices say it is end-of-life too, so ordering it would be a mistake.
+
+Both lookups are scored on every run: the v0.1 one (exact part number, the replacement the
+first notice names) and the current one (spare suffixes ignored, replacements followed).
 """
 
 from __future__ import annotations
@@ -14,6 +17,11 @@ from pathlib import Path
 
 from catalyst_lifecycle.eol import NOT_LISTED, EolTable, lookup, status_of
 from catalyst_lifecycle.parse import Device
+
+MODES = {
+    "one_hop": {"follow": False, "exact": True},
+    "chains": {"follow": True, "exact": False},
+}
 
 
 @dataclass
@@ -39,31 +47,32 @@ def measure(devices: list[Device], table: EolTable, key: list[dict[str, str]], a
     if keyed != set(parts):
         raise ValueError(f"key and corpus disagree: {sorted(keyed ^ set(parts))}")
 
-    score, rows = Score(), []
+    scores = {mode: Score() for mode in MODES}
+    rows = []
     for k in key:
         part = parts[(k["device"], k["name"])]
-        result = lookup(part.pid, table, as_of)
-        replacement = result.replacement or ""
-        stale = bool(replacement) and status_of(table.find(replacement), as_of) != NOT_LISTED
-        score.parts += 1
-        score.status_right += result.status == k["status"]
-        if k["replacement"]:
-            score.with_replacement += 1
-            score.replacement_right += replacement == k["replacement"]
-        score.stale += stale
-        rows.append(
-            {
-                "device": part.device,
-                "name": part.name,
-                "pid": part.pid,
-                "expected_status": k["status"],
-                "status": result.status,
-                "expected_replacement": k["replacement"],
-                "replacement": replacement,
-                "stale": "yes" if stale else "",
-            }
-        )
-    return score, rows
+        row = {
+            "device": part.device,
+            "name": part.name,
+            "pid": part.pid,
+            "expected_status": k["status"],
+            "expected_replacement": k["replacement"],
+        }
+        for mode, options in MODES.items():
+            result = lookup(part.pid, table, as_of, **options)
+            replacement = result.replacement or ""
+            stale = bool(replacement) and status_of(table.find(replacement), as_of) != NOT_LISTED
+            score = scores[mode]
+            score.parts += 1
+            score.status_right += result.status == k["status"]
+            if k["replacement"]:
+                score.with_replacement += 1
+                score.replacement_right += replacement == k["replacement"]
+            score.stale += stale
+            row |= {f"{mode}_status": result.status, f"{mode}_replacement": replacement}
+            row[f"{mode}_stale"] = "yes" if stale else ""
+        rows.append(row)
+    return scores, rows
 
 
 def write_rows(rows: list[dict[str, str]], path: Path) -> None:

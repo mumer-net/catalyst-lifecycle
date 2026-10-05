@@ -43,11 +43,28 @@ def test_a_notice_announced_after_the_date_does_not_count_yet():
     assert lookup("C9400-SUP-1", TABLE, date(2024, 4, 30)).status == ANNOUNCED
 
 
-def test_sup8e_gets_the_replacement_its_notice_names():
+def test_one_hop_gives_the_replacement_the_first_notice_names():
+    result = lookup("WS-X45-SUP8-E", TABLE, AS_OF, follow=False, exact=True)
+    assert (result.replacement, result.chain) == ("C9400-SUP-1XL", ("C9400-SUP-1XL",))
+
+
+def test_sup8e_follows_its_replacement_to_a_part_still_sold():
     result = lookup("WS-X45-SUP8-E", TABLE, AS_OF)
     assert result.status == PAST_SUPPORT
     assert result.entry.notice.id == "EOL13217"
-    assert result.replacement == "C9400-SUP-1XL"
+    assert result.chain == ("C9400-SUP-1XL", "C9400X-SUP-2XL")
+    assert result.replacement == "C9400X-SUP-2XL"
+
+
+def test_the_oldest_chassis_follows_three_notices():
+    assert lookup("WS-C4507R", TABLE, AS_OF).chain == ("WS-C4507R-E", "WS-C4507R+E", "C9407R")
+
+
+def test_spare_and_redundant_suffixes_find_the_same_part():
+    assert lookup("WS-X4597+E", TABLE, AS_OF).entry.pid == "WS-X4597+E="
+    assert lookup("WS-X45-SUP8-E/2", TABLE, AS_OF).entry.pid == "WS-X45-SUP8-E"
+    assert lookup("WS-X4748-RJ45V+E++=", TABLE, AS_OF).entry.pid == "WS-X4748-RJ45V+E"
+    assert lookup("WS-X4597+E", TABLE, AS_OF, exact=True).status == NOT_LISTED
 
 
 def test_a_part_with_no_notice_is_not_listed():
@@ -68,3 +85,20 @@ def test_dates_out_of_order_are_rejected(tmp_path):
     )
     with pytest.raises(ValueError, match="out of order"):
         load_table(bad)
+
+
+def test_a_chain_that_ends_at_a_part_with_no_replacement_names_none():
+    table = EolTable([Entry("WS-X1", notice("EOL1"), "WS-X2"), Entry("WS-X2", notice("EOL2"), None)])
+    result = lookup("WS-X1", table, AS_OF)
+    assert (result.replacement, result.chain) == (None, ("WS-X2",))
+
+
+def test_a_replacement_loop_is_an_error():
+    table = EolTable([Entry("WS-X1", notice("EOL1"), "WS-X2"), Entry("WS-X2", notice("EOL2"), "WS-X1")])
+    with pytest.raises(ValueError, match="loop"):
+        lookup("WS-X1", table, AS_OF)
+
+
+def test_the_same_part_in_two_notices_is_rejected():
+    with pytest.raises(ValueError, match="same part"):
+        EolTable([Entry("WS-X1", notice("EOL1"), None), Entry("WS-X1=", notice("EOL2"), None)])

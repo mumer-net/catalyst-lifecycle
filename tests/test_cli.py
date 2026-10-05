@@ -21,7 +21,7 @@ def test_measure_writes_rows_and_a_summary(tmp_path, monkeypatch):
     assert len(out.read_text().splitlines()) == 61
     summary = json.loads(out.with_suffix(".json").read_text())
     assert summary["as_of"] == "2026-09-30"
-    assert summary["parts"] == 60
+    assert summary["chains"]["parts"] == 60
 
 
 def test_backup_reads_saved_running_configs(tmp_path):

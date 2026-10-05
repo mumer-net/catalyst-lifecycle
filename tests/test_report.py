@@ -43,3 +43,11 @@ def test_html_escapes_what_it_prints(tmp_path):
     page = out.read_text()
     assert "&lt;script&gt;" in page
     assert "<script>" not in page
+
+
+def test_csv_shows_the_spare_it_matched_and_the_parts_passed_through(tmp_path):
+    out = tmp_path / "report.csv"
+    write_csv(build_rows([device("WS-X45-SUP7-E", "WS-X4597+E")], TABLE, AS_OF), out)
+    sup, fan = csv.DictReader(out.open())
+    assert (sup["replace_with"], sup["via"]) == ("C9400X-SUP-2XL", "WS-X45-SUP8-E > C9400-SUP-1XL")
+    assert (fan["matched_as"], fan["replace_with"], fan["via"]) == ("WS-X4597+E=", "", "")

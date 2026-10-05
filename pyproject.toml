@@ -1,6 +1,6 @@
 [project]
 name = "catalyst-lifecycle"
-version = "0.1.0"
+version = "0.2.0"
 description = "Inventories Catalyst switches over read-only SSH, backs up configs to Git, and flags parts past Cisco end-of-support"
 readme = "README.md"
 requires-python = ">=3.12"

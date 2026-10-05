@@ -63,17 +63,23 @@ def cmd_report(args) -> int:
 
 def cmd_measure(args) -> int:
     as_of, key = read_key(args.key)
-    score, rows = measure(load_devices(args.corpus), load_table(args.table), key, as_of)
-    table = Table(title=f"Answer key, {score.parts} parts, as of {as_of}")
+    scores, rows = measure(load_devices(args.corpus), load_table(args.table), key, as_of)
+    before, after = scores["one_hop"], scores["chains"]
+    table = Table(title=f"Answer key, {after.parts} parts, as of {as_of}")
     table.add_column("What")
-    table.add_column("Result", justify="right")
-    table.add_row("Status right", f"{score.status_right}/{score.parts}")
-    table.add_row("Replacement right", f"{score.replacement_right}/{score.with_replacement}")
-    table.add_row("Replacements that are end-of-life too", str(score.stale))
+    table.add_column("v0.1: exact, one hop", justify="right")
+    table.add_column("v0.2: chains", justify="right")
+    table.add_row("Status right", f"{before.status_right}/{before.parts}", f"{after.status_right}/{after.parts}")
+    table.add_row(
+        "Replacement right",
+        f"{before.replacement_right}/{before.with_replacement}",
+        f"{after.replacement_right}/{after.with_replacement}",
+    )
+    table.add_row("Replacements that are end-of-life too", str(before.stale), str(after.stale))
     console.print(table)
     if args.out:
         write_rows(rows, args.out)
-        summary = {"as_of": str(as_of), "lookup": "exact part number, one hop", **asdict(score)}
+        summary = {"as_of": str(as_of), **{mode: asdict(score) for mode, score in scores.items()}}
         args.out.with_suffix(".json").write_text(json.dumps(summary, indent=2) + "\n")
     return 0
 

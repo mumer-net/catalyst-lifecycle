@@ -18,7 +18,8 @@ from catalyst_lifecycle.parse import Device, Part
 
 STATUSES = (PAST_SUPPORT, END_OF_SALE, ANNOUNCED, NOT_LISTED)
 STYLES = {PAST_SUPPORT: "red", END_OF_SALE: "yellow", ANNOUNCED: "cyan", NOT_LISTED: "dim"}
-COLUMNS = ("device", "name", "pid", "serial", "status", "notice", "end_of_sale", "last_support", "replace_with")
+COLUMNS = ("device", "name", "pid", "serial", "status", "notice", "matched_as", "end_of_sale", "last_support")
+COLUMNS += ("replace_with", "via")
 
 
 @dataclass(frozen=True)
@@ -27,17 +28,21 @@ class Row:
     result: Lookup
 
     def values(self) -> dict[str, str]:
-        entry = self.result.entry
+        entry, result = self.result.entry, self.result
+        # the replacements passed through on the way to the one to order
+        via = result.chain[:-1] if result.replacement else result.chain
         return {
             "device": self.part.device,
             "name": self.part.name,
             "pid": self.part.pid,
             "serial": self.part.serial,
-            "status": self.result.status,
+            "status": result.status,
             "notice": entry.notice.id if entry else "",
+            "matched_as": entry.pid if entry and entry.pid != self.part.pid else "",
             "end_of_sale": str(entry.notice.end_of_sale) if entry else "",
             "last_support": str(entry.notice.last_support) if entry else "",
-            "replace_with": self.result.replacement or "",
+            "replace_with": result.replacement or "",
+            "via": " > ".join(via),
         }
 
 
@@ -66,12 +71,12 @@ def summary(rows: list[Row]) -> str:
 
 def print_report(rows: list[Row], as_of: date, console: Console) -> None:
     table = Table(title=f"Lifecycle status on {as_of}")
-    for heading in ("Device", "Part", "PID", "Status", "Support ends", "Replace with"):
+    for heading in ("Device", "Part", "PID", "Status", "Support ends", "Replace with", "Via"):
         table.add_column(heading)
     for row in rows:
         v = row.values()
         status = Text(v["status"], style=STYLES[v["status"]])
-        table.add_row(v["device"], v["name"], v["pid"], status, v["last_support"], v["replace_with"])
+        table.add_row(v["device"], v["name"], v["pid"], status, v["last_support"], v["replace_with"], v["via"])
     console.print(table)
     console.print(summary(rows))
 
