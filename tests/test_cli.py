@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from catalyst_lifecycle.cli import main
@@ -11,6 +12,16 @@ def test_report_writes_csv_and_html(tmp_path, monkeypatch):
     assert main(["report", "corpus", "--as-of", "2026-09-30", "--csv", str(csv_file), "--html", str(html_file)]) == 0
     assert len(csv_file.read_text().splitlines()) == 61  # header and 60 parts
     assert "Replacement parts" in html_file.read_text()
+
+
+def test_measure_writes_rows_and_a_summary(tmp_path, monkeypatch):
+    monkeypatch.chdir(ROOT)
+    out = tmp_path / "results" / "run.csv"
+    assert main(["measure", "--out", str(out)]) == 0
+    assert len(out.read_text().splitlines()) == 61
+    summary = json.loads(out.with_suffix(".json").read_text())
+    assert summary["as_of"] == "2026-09-30"
+    assert summary["parts"] == 60
 
 
 def test_backup_reads_saved_running_configs(tmp_path):
