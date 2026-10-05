@@ -108,6 +108,7 @@ uv run catalyst-lifecycle backup                            # commits to ~/confi
 - For the backup drill I added a loopback by hand on the shared sandbox, backed up, removed it, and backed up again. The backup repo shows three commits: the first backup, 4 lines added, and 4 lines removed. The device added `no ip address` to my loopback on its own.
 - A bug I hit: with credentials missing, the collect error printed the device name twice. The name came from both the exception and the command that printed it. It now comes from one place.
 - I added masking for SNMPv3 user passwords, AAA `server-private` keys, and VPN keyring pre-shared keys, which the first version of the backup missed.
+- ntc-templates keeps the padding after VID in `show inventory`, so I sent a fix upstream: [ntc-templates #2369](https://github.com/networktocode/ntc-templates/pull/2369). The parser here still strips every field, so it works with or without the fix.
 - My notes from the drills are in [docs/drills.md](docs/drills.md).
 
 ## License
