@@ -1,0 +1,37 @@
+[project]
+name = "catalyst-lifecycle"
+version = "0.1.0"
+description = "Inventories Catalyst switches over read-only SSH, backs up configs to Git, and flags parts past Cisco end-of-support"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "netmiko>=4.8,<5",
+    "ntc-templates>=9.3,<10",
+    "python-dotenv>=1.2",
+    "pyyaml>=6",
+    "rich>=15",
+]
+
+[project.scripts]
+catalyst-lifecycle = "catalyst_lifecycle.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=9", "ruff>=0.16"]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
