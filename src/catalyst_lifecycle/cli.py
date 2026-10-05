@@ -1,4 +1,4 @@
-"""catalyst-lifecycle: collect and report."""
+"""catalyst-lifecycle: collect, back up, and report."""
 
 from __future__ import annotations
 
@@ -10,9 +10,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 from rich.console import Console
 
+from catalyst_lifecycle import backup as backups
 from catalyst_lifecycle.collect import collect, load_targets
 from catalyst_lifecycle.eol import load_table
-from catalyst_lifecycle.parse import load_devices
+from catalyst_lifecycle.parse import command_file, load_devices
 from catalyst_lifecycle.report import build_rows, print_report, write_csv, write_html
 
 TABLE = Path("data/eol.yaml")
@@ -33,6 +34,19 @@ def cmd_collect(args) -> int:
     return 1 if failed else 0
 
 
+def cmd_backup(args) -> int:
+    repo = args.repo.expanduser()
+    for config_file in sorted(args.captures.glob("*/" + command_file("show running-config"))):
+        device = config_file.parent.name
+        result = backups.backup(device, config_file.read_text(), repo)
+        if result.status == "changed":
+            console.print(f"{device}: changed, {result.added} added, {result.removed} removed")
+            console.print(result.diff, markup=False, highlight=False)
+        else:
+            console.print(f"{device}: {result.status}")
+    return 0
+
+
 def cmd_report(args) -> int:
     rows = build_rows(load_devices(args.path), load_table(args.table), args.as_of)
     print_report(rows, args.as_of, console)
@@ -51,6 +65,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--devices", type=Path, default=Path("devices.yaml"))
     p.add_argument("--out", type=Path, default=Path("captures"))
     p.set_defaults(func=cmd_collect)
+
+    p = sub.add_parser("backup", help="commit each device's running config to a local Git repo")
+    p.add_argument("captures", type=Path, nargs="?", default=Path("captures"))
+    p.add_argument("--repo", type=Path, default=Path("~/config-backups"))
+    p.set_defaults(func=cmd_backup)
 
     p = sub.add_parser("report", help="look up every part in the end-of-life table")
     p.add_argument("path", type=Path, help="a device folder, or a folder of device folders")

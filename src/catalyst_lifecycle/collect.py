@@ -42,7 +42,7 @@ def collect(target: Target, out_dir: Path) -> Path:
     """Run the allowlisted commands on one device and save each output as a text file."""
     username, password = os.environ.get(target.username_env), os.environ.get(target.password_env)
     if not username or not password:
-        raise RuntimeError(f"{target.name}: set {target.username_env} and {target.password_env} in .env")
+        raise RuntimeError(f"set {target.username_env} and {target.password_env} in .env")
     params = {
         "device_type": target.device_type,
         "host": target.host,

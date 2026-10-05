@@ -11,3 +11,12 @@ def test_report_writes_csv_and_html(tmp_path, monkeypatch):
     assert main(["report", "corpus", "--as-of", "2026-09-30", "--csv", str(csv_file), "--html", str(html_file)]) == 0
     assert len(csv_file.read_text().splitlines()) == 61  # header and 60 parts
     assert "Replacement parts" in html_file.read_text()
+
+
+def test_backup_reads_saved_running_configs(tmp_path):
+    device = tmp_path / "captures" / "edge-1"
+    device.mkdir(parents=True)
+    (device / "show_running-config.txt").write_text("hostname edge-1\nenable secret 9 $9$abc\nend\n")
+    repo = tmp_path / "backups"
+    assert main(["backup", str(tmp_path / "captures"), "--repo", str(repo)]) == 0
+    assert (repo / "edge-1.cfg").read_text() == "hostname edge-1\nenable secret 9 <removed>\nend\n"
