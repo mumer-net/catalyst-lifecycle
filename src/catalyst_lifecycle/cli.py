@@ -1,4 +1,4 @@
-"""catalyst-lifecycle: report on saved show output."""
+"""catalyst-lifecycle: collect and report."""
 
 from __future__ import annotations
 
@@ -7,14 +7,30 @@ import sys
 from datetime import date
 from pathlib import Path
 
+from dotenv import load_dotenv
 from rich.console import Console
 
+from catalyst_lifecycle.collect import collect, load_targets
 from catalyst_lifecycle.eol import load_table
 from catalyst_lifecycle.parse import load_devices
 from catalyst_lifecycle.report import build_rows, print_report, write_csv, write_html
 
 TABLE = Path("data/eol.yaml")
 console = Console()
+
+
+def cmd_collect(args) -> int:
+    load_dotenv(".env")
+    failed = 0
+    for target in load_targets(args.devices):
+        try:
+            folder = collect(target, args.out)
+        except Exception as e:  # one unreachable device shouldn't stop the rest
+            console.print(f"{target.name}: {e}", style="red", markup=False)
+            failed += 1
+            continue
+        console.print(f"{target.name}: saved to {folder}")
+    return 1 if failed else 0
 
 
 def cmd_report(args) -> int:
@@ -30,6 +46,11 @@ def cmd_report(args) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="catalyst-lifecycle")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    p = sub.add_parser("collect", help="save show output from each device in devices.yaml (read-only)")
+    p.add_argument("--devices", type=Path, default=Path("devices.yaml"))
+    p.add_argument("--out", type=Path, default=Path("captures"))
+    p.set_defaults(func=cmd_collect)
 
     p = sub.add_parser("report", help="look up every part in the end-of-life table")
     p.add_argument("path", type=Path, help="a device folder, or a folder of device folders")

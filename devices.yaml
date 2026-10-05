@@ -1,0 +1,8 @@
+# Devices to collect from. Hosts come from each sandbox's Quick Access tab. Credentials never
+# go here: each device names the .env variables that hold them.
+devices:
+  - name: devnet-cat8000v
+    host: devnetsandboxiosxec8k.cisco.com
+    device_type: cisco_xe
+    username_env: C8K_USERNAME
+    password_env: C8K_PASSWORD
