@@ -1,0 +1,4 @@
+device,name,pid,status,notice,end_of_sale,last_support,replace_with
+devnet-cat8000v,Chassis,C8000V,not listed,,,,
+devnet-cat8000v,module R0,C8000V,not listed,,,,
+devnet-cat8000v,module F0,C8000V,not listed,,,,
