@@ -1,0 +1,171 @@
+# Cisco end-of-life notices for Catalyst 4500 parts, plus the two Catalyst 9400 notices that
+# their replacements run into. Copied by hand from each notice page on cisco.com.
+#
+# parts maps a part number, written the way the notice writes it, to the replacement the notice
+# names (null when it names none). Where a notice lists two replacements, this keeps the first
+# one and the comment names the other. Bundles, covers, and filters are left out because they
+# never show up in show inventory.
+checked: 2026-09-30
+
+notices:
+  - id: EOL13217
+    title: Catalyst C4500E Series
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-743088.html
+    announced: 2019-10-31
+    end_of_sale: 2020-10-30
+    last_support: 2025-10-31
+    parts:
+      WS-C4503-E: C9404R
+      WS-C4506-E: C9407R
+      WS-C4507R+E: C9407R
+      WS-C4510R+E: C9410R
+      WS-X45-SUP8-E: C9400-SUP-1XL
+      WS-X45-SUP8L-E: C9400-SUP-1
+      WS-X4748-RJ45V+E: C9400-LC-48P
+      WS-X4748-UPOE+E: C9400-LC-48U
+      WS-X4748-RJ45-E: C9400-LC-48T
+      WS-X4748-SFP-E: C9400-LC-48S
+      WS-X4748-12X48U+E: C9400-LC-48UX
+      WS-X4712-SFP+E: C9400-LC-24XS
+      WS-X4712-SFP-E: C9400-LC-24S
+      WS-X4724-SFP-E: C9400-LC-24S
+      WS-X4640-CSFP-E: C9400-LC-48S
+      PWR-C45-1000AC: C9400-PWR-2100AC
+      PWR-C45-1300ACV: C9400-PWR-2100AC
+      PWR-C45-1400AC: C9400-PWR-2100AC
+      PWR-C45-2800ACV: C9400-PWR-3200AC
+      PWR-C45-4200ACV: C9400-PWR-3200AC
+      PWR-C45-6000ACV: C9400-PWR-3200AC
+      PWR-C45-9000ACV: C9400-PWR-3200AC
+      PWR-C45-1400DC: C9400-PWR-3200DC
+      PWR-C45-1400DC-P: C9400-PWR-3200DC
+      SD-X45-2GB-E: C9400-SSD-240GB
+      USB-X45-4GB-E: C9400-SSD-240GB
+      # Fan trays are listed only as spares, with no replacement.
+      WS-X4582+E=: null
+      WS-X4593-E=: null
+      WS-X4596-E=: null
+      WS-X4597+E=: null
+
+  - id: EOL10936
+    title: Catalyst 4500E Line Cards
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-737185.html
+    announced: 2016-04-30
+    end_of_sale: 2017-04-30
+    last_support: 2022-04-30
+    parts:
+      WS-X4648-RJ45V+E: WS-X4748-RJ45V+E
+      WS-X4648-RJ45-E: WS-X4748-RJ45-E
+      WS-X4606-X2-E: WS-X4712-SFP+E
+      WS-X4612-SFP-E: WS-X4712-SFP-E
+      WS-X4624-SFP-E: WS-X4724-SFP-E
+      WS-X4248-FE-SFP: WS-X4640-CSFP-E  # also WS-X4748-SFP-E
+      WS-X4148-FX-MT: WS-X4640-CSFP-E  # also WS-X4748-SFP-E
+
+  - id: EOL13571
+    title: Catalyst 4500 Supervisor Engine 9-E
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-744420.html
+    announced: 2020-10-30
+    end_of_sale: 2021-10-30
+    last_support: 2026-10-31
+    parts:
+      WS-X45-SUP9-E: null
+
+  - id: EOL12151
+    title: Catalyst 4500 Supervisor Engine 7L-E
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-739917.html
+    announced: 2017-10-31
+    end_of_sale: 2018-10-31
+    last_support: 2023-10-31
+    parts:
+      WS-X45-SUP7L-E: WS-X45-SUP8L-E
+
+  - id: EOL11264
+    title: Catalyst 4500 Supervisor Engine 7-E
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-738118.html
+    announced: 2016-10-31
+    end_of_sale: 2017-10-31
+    last_support: 2022-10-31
+    parts:
+      WS-X45-SUP7-E: WS-X45-SUP8-E  # also WS-X45-SUP9-E
+
+  - id: EOL9604
+    title: Catalyst 4500 Supervisor Engine 6L-E
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eos-eol-notice-c51-732500.html
+    announced: 2014-08-04
+    end_of_sale: 2015-02-02
+    last_support: 2020-02-29
+    parts:
+      WS-X45-SUP6L-E: WS-X45-SUP7L-E  # also WS-X45-SUP8L-E
+
+  - id: EOL8975
+    title: Catalyst 4500 Supervisor Engine 6-E
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eol__C51-726869.html
+    announced: 2013-03-01
+    end_of_sale: 2014-03-01
+    last_support: 2019-02-28
+    parts:
+      WS-X45-SUP6-E: WS-X45-SUP7-E  # also WS-X45-SUP9-E
+
+  - id: EOL9093
+    title: Catalyst 4507R-E and 4510R-E Spare Fan Tray
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eol__C51-726867.html
+    announced: 2013-03-01
+    end_of_sale: 2013-08-30
+    last_support: 2018-08-31
+    parts:
+      WS-X4582-E=: null
+      WS-X4597-E=: null
+
+  - id: EOL8710
+    title: Catalyst 4500E Chassis Spare Parts
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eol_C51-715893.html
+    announced: 2012-08-31
+    end_of_sale: 2013-03-01
+    last_support: 2018-02-28
+    parts:
+      WS-X4K-CLOCK-E=: null
+      WS-X4590-E=: null
+
+  - id: EOL8168
+    title: Select Catalyst 4500E Series Chassis
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eol_c51-706059.html
+    announced: 2012-04-16
+    end_of_sale: 2013-04-16
+    last_support: 2018-04-30
+    parts:
+      WS-C4507R-E: WS-C4507R+E  # also C9407R
+      WS-C4510R-E: WS-C4510R+E  # also C9410R
+
+  - id: EOL6869
+    title: Catalyst 4500 Non-E-Series Chassis
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-4500-series-switches/eol_c51_574042.html
+    announced: 2010-01-30
+    end_of_sale: 2010-07-31
+    last_support: 2015-07-31
+    parts:
+      WS-C4503: WS-C4503-E
+      WS-C4506: WS-C4506-E
+      WS-C4507R: WS-C4507R-E
+      WS-C4510R: WS-C4510R-E
+      WS-X4590=: null
+
+  - id: EOL15392
+    title: Catalyst 9400 Series Supervisor 1 Module
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9400-series-switches/catalyst-9400-series-supervisor-module-eol.html
+    announced: 2024-04-30
+    end_of_sale: 2025-04-30
+    last_support: 2030-04-30
+    parts:
+      C9400-SUP-1: C9400X-SUP-2
+      C9400-SUP-1XL: C9400X-SUP-2XL
+      C9400-SUP-1XL-Y: C9400X-SUP-2XL
+
+  - id: EOL15633
+    title: Catalyst 9400 Series 48-Port UPOE with 24p mGig 24p RJ-45
+    url: https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9400-series-switches/catalyst-9400-48port-upoe-mgig-24p-eol.html
+    announced: 2025-04-30
+    end_of_sale: 2026-04-30
+    last_support: 2031-04-30
+    parts:
+      C9400-LC-48UX: C9400-LC-48HN
