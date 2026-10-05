@@ -1,0 +1,17 @@
+{
+  "as_of": "2026-09-30",
+  "one_hop": {
+    "parts": 60,
+    "status_right": 57,
+    "with_replacement": 29,
+    "replacement_right": 19,
+    "stale": 10
+  },
+  "chains": {
+    "parts": 60,
+    "status_right": 60,
+    "with_replacement": 29,
+    "replacement_right": 29,
+    "stale": 0
+  }
+}
